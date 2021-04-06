@@ -23,11 +23,6 @@ The code should run with no issues using Python versions 3.*.
 Perform customer segmentation to determine which part of the population to target with a new mail order campaign.
 
 
-
-
-
-
-
 ## File Descriptions <a name="methods"></a>
 
 There is one notebooks and one blogpost to showcase work related to the above question.   
@@ -47,4 +42,5 @@ Once I've chosen a model, I'll use it to make predictions on the campaign data a
 The main findings of the code can be found at the post available [here](https://fmakayi.github.io/).
 
 ## Licensing, Authors, Acknowledgements<a name="licensing"></a>
+Arvato Financial Solutions for the dataset
 https://towardsdatascience.com/
