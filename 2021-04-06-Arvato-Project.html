@@ -42,6 +42,15 @@ Udacity_MAILOUT_052018_TRAIN.csv: Demographics data for individuals who were tar
 I will use unsupervised learning techniques to perform customer segmentation, identifying the parts of the population that best describe the core customer base of the company. Then, I'll apply what I've learned on a third dataset with demographics information for targets of a marketing campaign for the company, and use a model to predict which individuals are most likely to convert into becoming customers for the company.</p>
 <p>My main objective is to figure out which people in Germany are most likely new  clients of a mail order company selling organic products.
 The goal is to help the client acquire new clients more efficiently.</p>
+<h3 id="the_k-means_algorithm_evolution"><em>The_K-Means_Algorithm_Evolution</em></h3>
+<p>Clustering is one of the fundamental techniques forgetting insight on the underlying nature and structure of data. The purpose of clustering is organizing a set of data into clusters whose elements are similar to each other and different from those in other clusters. One of the clustering algorithms more widely used to date is K-means, because of its easiness for interpreting its results and implementation. K-means is a family of algorithms that were developed in the 1950s as a result of independent investigations.</p>
+<h3 id="logistic-regression-history"><em>Logistic Regression History</em></h3>
+<p>First appearance of Logistic Function is seen in early 19th century.
+Pierre François Verhulst published logistic function in 1838 under the name: Correspondance mathématique et physique.Verhulst was a Belgian mathematician and lived a short life between 1804 and 1849 in Brussels.
+After Verhulst’s initial discovery of logistic function, the most notable discoveries were the probit model, developed by Chester Ittner Bliss in 1934 and maximum likelihood estimation by Ronald Fisher in 1935.
+In 1943 Wilson and Worcester used logistic model in bioassay which was the first known application of its kind.
+n 1966 Cox introduced multinomial logit model which became a step up for the logistic regression applications with the logit model.
+In 1973 McFadden made a connection between multinomial logit model and discrete choice theory and the rest is history.</p>
 <h2 id="metrics"><em>Metrics</em></h2>
 <h3 id="unsupervised-learning">Unsupervised Learning</h3>
 <p>Silhouette Coefficient.
@@ -63,33 +72,63 @@ A performance measurement for the classification problems at various threshold s
 <p>The "CUSTOMERS" file contains three extra columns ('CUSTOMER_GROUP', 'ONLINE_PURCHASE', and 'PRODUCT_GROUP'), which provide broad information about the customers depicted in the file. The  "MAILOUT_TRAIN" file included one additional column, "RESPONSE", which indicated whether or not each recipient became a customer of the company. In the "MAILOUT_TEST" subset it has been removed; it is against that withheld column that the final predictions will be assessed in the Kaggle competition.</p>
 <p>Five columns ('ALTER_KIND1','ALTER_KIND2','ALTER_KIND3','ALTER_KIND4','KK_KUNDENTYP','EXTSEL992') have more than 50% of the data missing, as a result there were dropped from the data frame.</p>
 <h2 id="data-visualization"><em>Data Visualization</em></h2>
-<img alt="age distribution" src="../images/age.png" width="" height="">
-<img alt="gender distribution" src="../images/gender.png" width="" height="">
-
-
-
-<h1 id="methodology">Methodology</h1>
+<p><img alt="age distribution" src="../images/age.png" width="" height="">  </p>
+<pre><code>          Figure 1: Customer and Population Age Distribution</code></pre><p><img alt="gender distribution" src="../images/gender.png" width="" height="">  </p>
+<pre><code>          Figure 2: Customer and Population Gender Distribution  </code></pre><h1 id="methodology">Methodology</h1>
 <h2 id="unsupervised-learning">Unsupervised Learning</h2>
 <h3 id="data-preprocessing"><em>Data Preprocessing</em></h3>
-<p>The scale and distribution of the data drawn was different for each variable so a standard scaler was used to standardize features by removing the mean and scaling to unit variance.</p>
+<ul>
+<li>Mixed Data types
+Columns 'CAMEO_DEUG_2015' and 'CAMEO_INTL_2015' had integer and string data types. String data types were corrected and the  columns converted to integer data type.</li>
+<li>Columns existing only in the customer dataset.
+The following columns were dropped since they only exist in one dataset:
+'CUSTOMER_GROUP', 'ONLINE_PURCHASE' and 'PRODUCT_GROUP'</li>
+<li>Missing values
+The following columns had more than 50% of their values missing therefore they were dropped from the data frame:
+'ALTER_KIND1','ALTER_KIND2','ALTER_KIND3','ALTER_KIND4','KK_KUNDENTYP','EXTSEL992'</li>
+<li>Columns not necessary for machine Learning
+The following columns were not necessary for analysis therefore they were dropped: 'LNR','CAMEO_DEU_2015','D19_LETZTER_KAUF_BRANCHE','EINGEFUEGT_AM','OST_WEST_KZ'</li>
+<li>Data Cleaning Function
+The 4 steps above were made into a function(clean_data) to clean the other three datasets</li>
+<li>Scaling
+Before scaling was done null values were dropped to avoid division by zero
+The scale and distribution of the data drawn was different for each variable so a standard scaler was used to standardize features by removing the mean and scaling to unit variance.</li>
+</ul>
 <h3 id="implementation"><em>Implementation</em></h3>
-<p>instantiate kmeans
-fit algorithm to features
-Calculate Proportion of features which belong to different clusters
-Plot the data clusters</p>
+<ul>
+<li><p>Instantiate kmeans
+  The following parameters were used
+  init="random", n_clusters=6,
+  the rest of the parameters were left as default</p>
+</li>
+<li><p>Fit algorithm to features<br>  Initialize random centroids<br>  Calculate distances between the centroids and the data points<br>  Compare distances between the data points and the centroids and take the smallest ones.<br>  Assign centroid with smallest distance as cluster for particular data point.<br>  Take mean values of coordinates of the data points and repeat until the coordinates of the centroids do not get updated anymore.</p>
+</li>
+<li><p>Calculate Proportion of features which belong to different clusters.<br>Plot the data clusters</p>
+</li>
+<li><p>Repeat the above steps for the population dataset</p>
+</li>
+<li><p>Lastly I compared the clustering  results of the customer dataset and the population  dataset</p>
+</li>
+</ul>
 <h3 id="refinement"><em>Refinement</em></h3>
 <p>The elbow method is used to find the correct value for the number of clusters k. This is achieved by  run several k-means, increment k with each iteration, and recording the SSE:</p>
-<h3 id="results">Results</h3>
+<ul>
+<li>Train a number of K-Means models using different values of K</li>
+<li>Record the average silhouette coefficient during each training</li>
+<li>Plot the silhouette score vs. number of clusters (K) graph</li>
+<li>Select the value of K for which silhouette score is the highest.<br>Finding the correct values for k in the ranger 1 to 10 takes a very long time.</li>
+</ul>
+<p><img alt="elbow plot" src="../images/elbow_plot.png" width="" height="">  </p>
+<pre><code>                  Figure 3: Elbow plot</code></pre><h3 id="results">Results</h3>
 <h4 id="model-evaluation-and-validation"><em>Model Evaluation and Validation</em></h4>
 <p>The optimal K value is found to be 6 using the elbow method.
 silhouette score for the customer data is 0.02
 silhouette score for the population data is 0.02
 The clustering is lightly dense and there are some overlapping clusters.</p>
 <h4 id="justification"><em>Justification</em></h4>
-<img alt="customer proportions" src="../images/Customer_prop.png" width="" height="">
-<img alt="population proportions" src="../images/Population_prop.png" width="" height="">
-
-<p>More than 89% of features belong to clusters 3, 0 and 4 for the customer data set.
+<p><img alt="customer proportions" src="../images/Customer_prop.png" width="" height="">  </p>
+<pre><code>                    Figure 4: Customer clusters proportions</code></pre><p><img alt="population proportions" src="../images/Population_prop.png" width="" height="">  </p>
+<pre><code>                    Figure 5: Population clusters proportions</code></pre><p>More than 89% of features belong to clusters 3, 0 and 4 for the customer data set.
 More than 84% of feature belong to clusters 4, 0, 2, and 1 for the population data set.
 The marketing campaign should focus efforts on customers of cluster 4 and cluster 0 for maximum impact.</p>
 <h3 id="conclusion">Conclusion</h3>
@@ -109,28 +148,35 @@ The marketing campaign should focus efforts on customers of cluster 4 and cluste
 Use of Principal component analysis to reduce the number of dimensions making the model more effective and efficient.</p>
 <h2 id="supervised-learning">Supervised Learning</h2>
 <h3 id="data-preprocessing"><em>Data Preprocessing</em></h3>
-<p>I used the function created during data wrangling to clean the data.
-Missing values were replaced with the mean values.</p>
+<p>I used the function created during data wrangling to clean the data.<br>Missing values were replaced with the mean values.</p>
 <h3 id="implementation"><em>Implementation</em></h3>
-<p>I used the logistic regression classification algorithm to predict which individuals were most likely to respond to a mailout campaign.
-Step 1: Load data and perform a train test split
-Step 2: Train classifier
-Step 3: Predict on test data
-Step 4 Display test results</p>
+<p>I used the logistic regression classification algorithm to predict which individuals were most likely to respond to a mailout campaign.<br>Step 1: Load data and perform a train test split.<br>        The 'Response' column is the independent variable and the rest of the columns in the data frame make up the features.<br>Step 2: Train classifier  </p>
+<pre><code>    * Instantiate the model, default parameters were used.  
+    * Fit the model with training data.  </code></pre><p>Step 3: Predict on test data.<br>Step 4 Display test results.</p>
 <h3 id="refinement"><em>Refinement</em></h3>
-<p>Grid-search was used to find the optimal hyperparameters of the model which results in the most ‘accurate’ predictions using the AUC ROC score.
-False negatives were reduces from 111 to 100.</p>
+<p>Grid-search was used to find the optimal hyperparameters of the model which results in the most ‘accurate’ predictions using the AUC ROC score.</p>
+<p>Because there is a large output class imbalance, where most individuals did not respond to the mailout, the metric needed to capture many of the actual customers as possible is AUC.<br>Therefor the grid search was maximized for  'roc_auc'
+The hyper parameters I tuned are as follows:</p>
+<ol>
+<li>Penalty: l1 or l2 which species the norm used in the penalization.</li>
+<li>C: Inverse of regularization strength- smaller values of C specify        stronger regularization.</li>
+</ol>
+<p>The values I searched over are as follows:<br>grid_values = {'penalty': ['l1', 'l2'],'C':[0.001,.009,0.01,.09,1,5,10,25]}</p>
+<p>Results of tuning are as follows:<br>tuned hyperparameters :(best parameters)  {'C': 0.09, 'penalty': 'l1'}</p>
+<p>After tuning False negatives were reduced from 111 to 100.</p>
 <h3 id="results">Results</h3>
 <h4 id="model-evaluation-and-validation"><em>Model Evaluation and Validation</em></h4>
-<p>Confusion Matrix Summary:
-                precision    recall  f1-score   support</p>
-<pre><code>      0       0.99      1.00      0.99      8714
-      1       0.00      0.00      0.00       100</code></pre><p>avg / total       0.98      0.99      0.98      8814</p>
+<p>Classification Report Summary:<br>               &nbsp;   precision &nbsp; &nbsp;  recall &nbsp; &nbsp;  f1-score &nbsp;  &nbsp;  support<br>          0   &nbsp;    0.99  &nbsp; &nbsp;  &nbsp;  &nbsp;   1.00   &nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;    0.99   &nbsp;   &nbsp; &nbsp;   8714<br>          1    &nbsp;     0.00   &nbsp;   &nbsp;  &nbsp;  &nbsp;    0.00  &nbsp;  &nbsp;  &nbsp;  &nbsp;     &nbsp;   0.00   &nbsp;   &nbsp;  &nbsp;     100<br>          avg    &nbsp;     0.98   &nbsp;   &nbsp;    0.99  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;   0.98   &nbsp;   &nbsp;  &nbsp;  8814<br>          total</p>
 <p>Accuracy: 0.988654413433</p>
-<p>ROC Curve:
-<img alt="ROC Curve" src="../images/roc_curve.png" width="" height=""></p>
-<p>Kaggle Leaderboard
-<img alt="Kaggle Leaderboard" src="../images/kaggle.png" width="" height=""></p>
+<p>Confusion Matrix Summary:
+array([[8714,    0],<br>       &nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp; [ 100,    0]])</p>
+<p><img alt="ROC Curve" src="../images/roc_curve.png" width="" height="">  </p>
+<pre><code>                Figure 6: plot the roc curve for the model</code></pre><p><img alt="Kaggle Leaderboard" src="../images/kaggle.png" width="" height="">  </p>
+<pre><code>                Figure 7: screenshot of the Kaggle Leaderboard</code></pre><p>K-Fold Cross Validation
+ KFold was used to perform the cross-validation.<br> Parameters used are as follows:<br> k=10,and shuttle set to false.</p>
+<p> accuracy of each fold - [0.98468345813478553, 0.98876786929884275, 0.98604492852280468, 0.98468345813478553, 0.98638529611980941, 0.98570456092579983, 0.98638529611980941, 0.99081007488087136, 0.99081007488087136, 0.98433775961865855]
+ Avg accuracy : 0.9868612776637038</p>
+<p> Based on the results of the cross validation, the results do not fluctuate very much therefor there is no overfitting and the model is robust.                 </p>
 <h4 id="justification"><em>Justification</em></h4>
 <p>By fitting the Logistic Regression model with the default parameters, we have a much ‘better’ model. The accuracy is 98.8% and at the same time, the Precision is 98%
 The AUC for the ROC curve score was 0.65025 on the first submission and 0.69655 after tuning.

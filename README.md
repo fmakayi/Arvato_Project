@@ -44,4 +44,8 @@ The main findings of the code can be found at the post available [here](https://
 ## Licensing, Authors, Acknowledgements<a name="licensing"></a>
 Arvato Financial Solutions for the dataset  
 
+https://www.researchgate.net/publication/332340076_The_K-Means_Algorithm_Evolution
+
+https://holypython.com/log-reg/logistic-regression-history/
+
 https://towardsdatascience.com/
